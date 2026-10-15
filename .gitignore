@@ -1,0 +1,32 @@
+# Python cache
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Editor / OS clutter
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Local output files, logs
+*.log
+
+# Folders created when organizing the bundled sample files
+sample_files/Images/
+sample_files/Documents/
+sample_files/Spreadsheets/
+sample_files/Presentations/
+sample_files/Videos/
+sample_files/Audio/
+sample_files/Archives/
+sample_files/Code/
+sample_files/Installers/
+sample_files/Others/
