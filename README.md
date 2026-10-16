@@ -5,7 +5,7 @@ A lightweight command-line utility that organizes files into folders based on th
 ## Features
 
 - Organizes files into nine predefined categories, with an `Others` category for unmatched extensions.
-- Runs in preview mode by default; no files are moved without `--apply`.
+- Runs in Preview Mode by default, with an explicit `--preview` option; no files are moved without `--apply`.
 - Prevents filename collisions by adding a numeric suffix instead of overwriting an existing file.
 - Processes only files directly inside the selected folder; existing subfolders are not traversed.
 - Skips symbolic links.
@@ -49,6 +49,34 @@ python file_organizer.py sample_files
 
 This displays the proposed destinations without changing any files.
 
+If the sample files have already been organized into subfolders, this command reports no files at the top level. Existing subfolders are skipped.
+
+### Preview Mode
+
+Preview Mode lists each file and its proposed destination folder and filename. It does not move, rename, or delete files, and it does not create destination folders.
+
+Preview is the default. These commands have the same effect:
+
+```bash
+python file_organizer.py "MyFiles"
+python file_organizer.py "MyFiles" --preview
+```
+
+For a folder containing `photo.jpg` and `report.pdf`, the preview includes:
+
+```text
+Mode: PREVIEW ONLY (nothing will change)
+photo.jpg  ->  Images/photo.jpg
+report.pdf  ->  Documents/report.pdf
+
+Summary: Documents: 1, Images: 1
+Preview complete. Add --apply to move files.
+```
+
+Destinations are relative to the selected folder. If a destination filename already exists, the preview shows the proposed numbered filename, such as `Images/photo (1).jpg`, without renaming anything.
+
+After reviewing the output, run the command with `--apply` to perform the moves. The `--preview` and `--apply` options cannot be used together. Each run checks the folder again; a preview does not save or lock a plan, so changes made to the folder between runs may affect the destinations. Preview does not guarantee that a later move will succeed, for example if the folder is not writable.
+
 ### Organize sample files
 
 ```bash
@@ -82,13 +110,14 @@ Paths containing spaces should be enclosed in quotation marks.
 ### Command-line options
 
 ```text
-usage: file_organizer.py [-h] [--apply] folder
+usage: file_organizer.py [-h] [--preview | --apply] folder
 
 positional arguments:
   folder     Directory containing the files to organize
 
 options:
   -h, --help  Show help and exit
+  --preview   Preview destinations without changing files (default)
   --apply     Move files into their destination folders
 ```
 
@@ -156,7 +185,7 @@ The project uses Python's built-in `unittest` framework. Tests use temporary dir
 python -m unittest discover -s tests -p "test_*.py" -v
 ```
 
-The test suite covers preview mode, file moving and subfolder preservation, and duplicate-name handling.
+The test suite checks default and explicit Preview Mode, displayed destinations, unchanged file contents and folder structure, duplicate-name predictions, empty folders, and rejection of conflicting mode options. It also checks actual file moving, subfolder preservation, and protection of existing filenames. All file-moving tests operate inside temporary test folders.
 
 ## Development
 

@@ -38,6 +38,7 @@ def unique_destination(folder: Path, filename: str, reserved: set[Path]) -> Path
 
 
 def organize(folder: Path, apply: bool = False) -> None:
+    """Show planned moves without changing files, unless apply is True."""
     folder = folder.expanduser().resolve()
     if not folder.exists() or not folder.is_dir():
         raise ValueError(f"Not an existing folder: {folder}")
@@ -69,7 +70,9 @@ def organize(folder: Path, apply: bool = False) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sort files into folders by type. Previews by default.")
     parser.add_argument("folder", type=Path, help="Folder containing files to organize; put paths with spaces in quotes")
-    parser.add_argument("--apply", action="store_true", help="Actually move files (otherwise previews only)")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--preview", action="store_true", help="Preview destinations without changing files (default)")
+    mode.add_argument("--apply", action="store_true", help="Actually move files (otherwise previews only)")
     args = parser.parse_args()
     try:
         organize(args.folder, args.apply)
